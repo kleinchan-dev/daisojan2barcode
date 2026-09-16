@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="ダイソーのネットショップの商品ページにJANコードのバーコードを自動表示するTampermonkeyユーザースクリプト">
+  <title>daisojan2barcode - ダイソー JANバーコード表示</title>
+  <style>
+    :root {
+      --bg: #101216;
+      --surface: #181b22;
+      --border: #272c36;
+      --text: #e8eaf0;
+      --muted: #9aa3b2;
+      --accent: #e4007f;
+      --accent-hover: #f81e97;
+      --link: #ff6db8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+      line-height: 1.75;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+    header { text-align: center; padding: 56px 0 8px; }
+    h1 { margin: 0 0 10px; font-size: 2rem; letter-spacing: .02em; }
+    .tagline { margin: 0; color: var(--muted); }
+    main { padding: 8px 0 40px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .card h2 { margin: 0 0 12px; font-size: 1.15rem; }
+    .badge {
+      display: inline-block;
+      vertical-align: 2px;
+      margin-left: 8px;
+      padding: 1px 8px;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+    .version { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
+    code {
+      background: #0c0e12;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: .9em;
+    }
+    .install-btn {
+      display: inline-block;
+      margin: 4px 0 16px;
+      padding: 12px 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .install-btn:hover { background: var(--accent-hover); }
+    .note { margin: 12px 0 0; color: var(--muted); font-size: .88rem; }
+    a { color: var(--link); }
+    ul, ol { margin: 0; padding-left: 1.5em; }
+    li { margin: 4px 0; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 0 48px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer p { margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>daisojan2barcode</h1>
+      <p class="tagline">ダイソーのネットショップの商品ページに、JAN コードのバーコードを自動で表示するユーザースクリプト</p>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Tampermonkey ユーザースクリプト<span class="badge">userscript</span></h2>
+        <p class="version" id="version-line" hidden>バージョン <code id="version-value"></code><span id="version-updated" hidden> ・最終更新 <time id="version-date"></time></span></p>
+        <a class="install-btn" href="./daisojan2barcode.user.js">クリックしてインストール</a>
+        <ul>
+          <li>要 <a href="https://www.tampermonkey.net/">Tampermonkey</a>（Chrome / Edge / Firefox など）</li>
+          <li>対象: <a href="https://jp.daisonet.com/">jp.daisonet.com</a>・<a href="https://jpbulk.daisonet.com/">jpbulk.daisonet.com</a> の商品ページ</li>
+          <li>EAN-13 のチェックディジットが妥当な JAN のみ描画</li>
+        </ul>
+        <p class="note">クリックすると Tampermonkey のインストール画面が開きます。</p>
+      </section>
+      <section class="card">
+        <h2>導入方法</h2>
+        <ol>
+          <li>ブラウザに <a href="https://www.tampermonkey.net/">Tampermonkey</a> をインストール</li>
+          <li>上の「クリックしてインストール」をクリックし、Tampermonkey のインストール画面で「インストール」</li>
+          <li><a href="https://jp.daisonet.com/products/4542804112627">単品買いの商品ページ</a>または<a href="https://jpbulk.daisonet.com/products/4549131622706">まとめ買いの商品ページ</a>で動作確認</li>
+        </ol>
+        <p class="note">既に開いている商品ページがある場合は再読み込みしてください。</p>
+      </section>
+      <section class="card">
+        <h2>更新</h2>
+        <p>インストール後は Tampermonkey が定期的に同じ URL をチェックし、自動で更新されます。</p>
+        <p>手動で更新する場合は、Tampermonkey ダッシュボードの「ユーティリティ」タブ →「ユーザースクリプトを更新」を実行してください。</p>
+      </section>
+    </main>
+    <footer>
+      <p>本スクリプトは個人利用のためのものです。サイト構造の変更により動作しなくなる場合があります。ダイソー・大創産業とは関係ありません。使用によって生じた損害・不利益について、作者は一切の責任を負いません。</p>
+      <p><a href="https://github.com/kleinchan-dev/daisojan2barcode">GitHub リポジトリ</a></p>
+    </footer>
+  </div>
+  <script>
+    (() => {
+      const pad = n => String(n).padStart(2, '0');
+      fetch('./daisojan2barcode.user.js')
+        .then(r => {
+          if (!r.ok) throw new Error(r.status);
+          const last = r.headers.get('last-modified');
+          return r.text().then(t => ({ t, last }));
+        })
+        .then(({ t, last }) => {
+          const m = t.match(/^\/\/\s*@version\s+(\S+)/m);
+          if (!m) return;
+          document.getElementById('version-value').textContent = m[1];
+          document.getElementById('version-line').hidden = false;
+          const d = last ? new Date(last) : null;
+          if (d && !isNaN(d)) {
+            document.getElementById('version-date').textContent = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+            document.getElementById('version-updated').hidden = false;
+          }
+        })
+        .catch(() => {});
+    })();
+  </script>
+</body>
+</html>
